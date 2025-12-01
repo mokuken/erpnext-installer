@@ -15,7 +15,7 @@ Run this directly inside **WSL2 Ubuntu**:
 bash <(curl -fsSL https://raw.githubusercontent.com/mokuken/erpnext-installer/refs/heads/main/erpnext_install.sh | sed 's/\r$//')
 ```
 
-This automatically downloads the script, fixes Windows line endings, and runs the installer.
+This automatically downloads the script, and runs the installer.
 
 ---
 
