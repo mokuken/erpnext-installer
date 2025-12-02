@@ -133,3 +133,14 @@ erpnext-wsl2-installer/
 
 MIT License
 
+---
+
+## Install apps (Optional)
+
+Webshop is an add-on e-commerce application built for the Frappe Framework and designed to work with ERPNext.:
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/mokuken/erpnext-installer/refs/heads/main/install_webshop_apps.sh | sed 's/\r$//')
+```
+
+It turns your ERPNext system into a fully functional online store where customers can browse products, add them to a cart, place orders, and make online payments.
