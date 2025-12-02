@@ -27,18 +27,21 @@ fi
 
 cd "$BENCH_DIR"
 
-# Activate bench virtualenv 'bench-env' if it exists inside the bench directory.
-# This helps ensure the 'bench' command is available from the expected Python environment.
-if [ -d "bench-env" ]; then
-  if [ -f "bench-env/bin/activate" ]; then
-    echo "Activating Python virtualenv at '$BENCH_DIR/bench-env'..."
+# Look for `bench-env` in the parent ERPNext folder (e.g. if BENCH_DIR is ERPNext/frappe-bench,
+# the virtualenv is expected at ERPNext/bench-env). This keeps `bench-env` centralized in the
+# ERPNext project folder instead of inside the bench directory itself.
+if [ -d "../bench-env" ]; then
+  if [ -f "../bench-env/bin/activate" ]; then
+    echo "Activating Python virtualenv at '$(cd .. && pwd)/bench-env'..."
     # shellcheck disable=SC1091
-    . "bench-env/bin/activate"
+    . "../bench-env/bin/activate"
   else
-    echo "WARNING: 'bench-env' directory found but 'bench-env/bin/activate' not present."
+    echo "WARNING: 'bench-env' directory found at parent but '../bench-env/bin/activate' not present."
   fi
 else
-  echo "Note: No 'bench-env' virtualenv found in '$BENCH_DIR'. If 'bench' is not on PATH, you may need to activate the correct venv manually."
+  echo "Note: No 'bench-env' virtualenv found in parent of '$BENCH_DIR' (expected '../bench-env')."
+  echo "If 'bench' is not on PATH, activate the correct venv manually, for example:
+  source /path/to/ERPNext/bench-env/bin/activate"
 fi
 
 if ! command -v bench >/dev/null 2>&1; then
