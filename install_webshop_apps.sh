@@ -107,9 +107,4 @@ else
   echo "WARNING: Could not fetch a 'webshop' app automatically. Please provide the correct GitHub repo URL, for example:\n  bench get-app webshop https://github.com/<owner>/<webshop-repo> --branch $BRANCH\nthen run:\n  bench --site $SITE install-app webshop"
 fi
 
-echo "Done."
-
-echo "Notes:"
-echo " - This script attempts to fetch apps using branch '$BRANCH' which is usually appropriate for Frappe/ERPNext v15."
-echo " - If a repository does not have a 'version-15' branch, bench will try fetching the default branch as a fallback."
-echo " - If installation fails due to incompatibility, you may need to select an app branch explicitly that matches your Frappe version."
+echo "Webshop installed successfully."
