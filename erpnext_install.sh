@@ -6,6 +6,12 @@ echo "=============================="
 echo " ERPNext v15 Installer for WSL2 Ubuntu"
 echo "=============================="
 
+# Create a working directory for ERPNext (default: ./ERPNext) and operate inside it
+ERP_DIR="${1:-ERPNext}"
+echo "Using ERP directory: $ERP_DIR"
+mkdir -p "$ERP_DIR"
+cd "$ERP_DIR"
+
 # Step 2: Update Linux & install dependencies
 echo "[1/8] Updating system and installing base packages..."
 sudo apt update
@@ -24,17 +30,14 @@ sudo mariadb -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'root'; FLUSH PRIVI
 
 sudo systemctl restart mariadb
 
-# Step 4: Install nvm, Node.js, Yarn
-echo "[3/8] Installing nvm + Node.js + Yarn..."
-export NVM_DIR="$HOME/.nvm"
-if [ ! -d "$NVM_DIR" ]; then
-  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
-fi
+# Step 4: Install Node.js 18 LTS (NodeSource) and Yarn
+echo "[3/8] Installing Node.js 18 LTS and Yarn..."
+# Use NodeSource installer for Node.js 18 LTS (recommended for Frappe v14-v16)
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt install -y nodejs
 
-source "$HOME/.nvm/nvm.sh"
-
-nvm install 18
-npm install -g yarn
+# Install Yarn globally using npm
+sudo npm install -g yarn
 
 # Step 5: Install wkhtmltopdf
 echo "[4/8] Installing wkhtmltopdf..."
