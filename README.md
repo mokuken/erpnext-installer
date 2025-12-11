@@ -9,13 +9,30 @@ required dependencies and configures ERPNext in a single command.
 
 ## 🚀 One-Line Install (Recommended)
 
-Run this directly inside **WSL2 Ubuntu**:
+Run this directly inside **WSL2 Ubuntu** to install the base Frappe setup:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/mokuken/erpnext-installer/refs/heads/main/erpnext_install.sh | sed 's/\r$//')
+bash <(curl -fsSL https://raw.githubusercontent.com/mokuken/erpnext-installer/main/install.sh | sed 's/\r$//')
 ```
 
-This automatically downloads the script, and runs the installer.
+This downloads and runs the `install.sh` script (creates a `Frappe` directory by default).
+
+Optional: Install ERPNext on the created bench/site with a single command:
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/mokuken/erpnext-installer/main/install_erpnext.sh | sed 's/\r$//')
+```
+
+Combined one-liner (Frappe first, then ERPNext) — runs `install.sh` then `install_erpnext.sh`:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/mokuken/erpnext-installer/main/install.sh | bash -s -- ERPNext && \
+curl -fsSL https://raw.githubusercontent.com/mokuken/erpnext-installer/main/install_erpnext.sh | bash -s -- ERPNext
+```
+
+Notes:
+- The `-- ERPNext` argument tells the scripts to use `ERPNext` as the working directory name (you can change it).
+- Run these inside **WSL2 Ubuntu**; they assume a Linux environment.
 
 ---
 
@@ -59,18 +76,24 @@ Or manually via GitHub → **Code → Download ZIP**
 
 ## ▶ Manual Installation (Alternative)
 
-If you downloaded the script manually:
+If you downloaded the scripts manually:
 
-### 1. Make the script executable
+### 1. Make the scripts executable
 
 ```bash
-chmod +x erpnext_install.sh
+chmod +x install.sh install_erpnext.sh install_webshop.sh
 ```
 
-### 2. Run it
+### 2. Run the base installer
 
 ```bash
-./erpnext_install.sh
+./install.sh
+```
+
+### 3. (Optional) Install ERPNext
+
+```bash
+./install_erpnext.sh
 ```
 
 The installer will automatically:
@@ -113,8 +136,10 @@ bench start
 ## 📘 Repository Structure
 
 ```
-erpnext-wsl2-installer/
-├── erpnext_install.sh
+erpnext-installer/
+├── install.sh
+├── install_erpnext.sh
+├── install_webshop.sh
 └── README.md
 ```
 
@@ -137,10 +162,12 @@ MIT License
 
 ## Install apps (Optional)
 
-Webshop is an add-on e-commerce application built for the Frappe Framework and designed to work with ERPNext.:
+Webshop is an add-on e-commerce application built for the Frappe Framework and designed to work with ERPNext.
+
+Install the webshop apps using the hosted script:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/mokuken/erpnext-installer/refs/heads/main/install_webshop_apps.sh | sed 's/\r$//')
+bash <(curl -fsSL https://raw.githubusercontent.com/mokuken/erpnext-installer/main/install_webshop.sh | sed 's/\r$//')
 ```
 
 It turns your ERPNext system into a fully functional online store where customers can browse products, add them to a cart, place orders, and make online payments.
