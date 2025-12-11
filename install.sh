@@ -2,9 +2,34 @@
 
 set -e
 
-echo "=============================="
+echo "======================================"
 echo " Frappe v15 Installer for WSL2 Ubuntu"
-echo "=============================="
+echo "======================================"
+echo ""
+
+# Prompt for configuration upfront
+read -p "Do you want to create a site? (y/n, default: y): " CREATE_SITE_INPUT
+CREATE_SITE="${CREATE_SITE_INPUT:-y}"
+
+if [[ "$CREATE_SITE" =~ ^[Yy]$ ]]; then
+    read -p "Enter site name (default: frappe.localhost): " SITE_INPUT
+    SITE_NAME="${SITE_INPUT:-frappe.localhost}"
+fi
+
+read -sp "Enter MariaDB root password (default: root): " DB_PASSWORD_INPUT
+echo ""
+DB_ROOT_PASSWORD="${DB_PASSWORD_INPUT:-root}"
+
+echo ""
+echo "Configuration:"
+if [[ "$CREATE_SITE" =~ ^[Yy]$ ]]; then
+    echo "  Create site: Yes"
+    echo "  Site name: $SITE_NAME"
+else
+    echo "  Create site: No"
+fi
+echo "  MariaDB root password: [hidden]"
+echo ""
 
 # Create a working directory for Frappe (default: ./Frappe) and operate inside it
 FRAPPE_DIR="${1:-Frappe}"
@@ -26,7 +51,7 @@ sudo systemctl enable mariadb
 sudo systemctl start mariadb
 
 # AUTO CONFIGURE ROOT PASSWORD
-sudo mariadb -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'root'; FLUSH PRIVILEGES;"
+sudo mariadb -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '$DB_ROOT_PASSWORD'; FLUSH PRIVILEGES;"
 
 sudo systemctl restart mariadb
 
@@ -58,23 +83,38 @@ echo "[6/7] Creating frappe-bench..."
 bench init frappe-bench --frappe-branch version-15
 cd frappe-bench
 
-# Step 8: Create Site
-echo "[7/7] Creating Frappe site..."
-SITE_NAME="frappe.localhost"
-
-bench new-site $SITE_NAME --admin-password admin --db-root-password root
-bench --site $SITE_NAME set-config enable_scheduler 1
-
-echo "=============================="
-echo " Frappe Installation Complete!"
-echo "=============================="
-echo ""
-echo "Site created: $SITE_NAME"
-echo "Admin password: admin"
-echo ""
-echo "To start Frappe, run:"
-echo "  cd $FRAPPE_DIR/frappe-bench"
-echo "  bench start"
-echo ""
+# Step 8: Create Site (optional)
+if [[ "$CREATE_SITE" =~ ^[Yy]$ ]]; then
+    echo "[7/7] Creating Frappe site..."
+    bench new-site $SITE_NAME --admin-password admin --db-root-password $DB_ROOT_PASSWORD
+    bench --site $SITE_NAME set-config enable_scheduler 1
+    
+    echo "=============================="
+    echo " Frappe Installation Complete!"
+    echo "=============================="
+    echo ""
+    echo "Site created: $SITE_NAME"
+    echo "Admin password: admin"
+    echo ""
+    echo "To start Frappe, run:"
+    echo "  cd $FRAPPE_DIR/frappe-bench"
+    echo "  bench start"
+    echo ""
+else
+    echo "[7/7] Skipping site creation..."
+    
+    echo "=============================="
+    echo " Frappe Installation Complete!"
+    echo "=============================="
+    echo ""
+    echo "To create a site manually, run:"
+    echo "  cd $FRAPPE_DIR/frappe-bench"
+    echo "  bench new-site <site-name> --admin-password admin --db-root-password $DB_ROOT_PASSWORD"
+    echo ""
+    echo "To start Frappe, run:"
+    echo "  cd $FRAPPE_DIR/frappe-bench"
+    echo "  bench start"
+    echo ""
+fi
 echo "Optional: Install ERPNext with ./install_erpnext.sh"
 echo "Optional: Install Webshop apps with ./install_webshop_apps.sh"
