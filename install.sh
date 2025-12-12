@@ -79,9 +79,10 @@ pip install --upgrade pip
 pip install frappe-bench
 
 # Step 7: Create Bench
-echo "[6/7] Creating frappe-bench..."
-bench init frappe-bench --frappe-branch version-15
-cd frappe-bench
+echo "[6/7] Creating frappe..."
+bench init frappe --frappe-branch version-15
+cd frappe
+bench set-config -g developer_mode 1
 
 # Step 8: Create Site (optional)
 if [[ "$CREATE_SITE" =~ ^[Yy]$ ]]; then
