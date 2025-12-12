@@ -55,10 +55,10 @@ sudo mariadb -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '$DB_ROOT_PASSWORD'
 
 sudo systemctl restart mariadb
 
-# Step 4: Install Node.js 18 LTS (NodeSource) and Yarn
-echo "[3/7] Installing Node.js 18 LTS and Yarn..."
-# Use NodeSource installer for Node.js 18 LTS (recommended for Frappe v14-v16)
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+# Step 4: Install Latest Node.js and Yarn
+echo "[3/7] Installing latest Node.js and Yarn..."
+# Use NodeSource installer for latest Node.js
+curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -
 sudo apt install -y nodejs
 
 # Install Yarn globally using npm
