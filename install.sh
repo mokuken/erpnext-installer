@@ -8,6 +8,9 @@ echo "======================================"
 echo ""
 
 # Prompt for configuration upfront
+read -p "Enter bench name (default: frappe-bench): " BENCH_INPUT
+BENCH_NAME="${BENCH_INPUT:-frappe-bench}"
+
 read -p "Do you want to create a site? (y/n, default: y): " CREATE_SITE_INPUT
 CREATE_SITE="${CREATE_SITE_INPUT:-y}"
 
@@ -22,6 +25,7 @@ DB_ROOT_PASSWORD="${DB_PASSWORD_INPUT:-root}"
 
 echo ""
 echo "Configuration:"
+echo "  Bench name: $BENCH_NAME"
 if [[ "$CREATE_SITE" =~ ^[Yy]$ ]]; then
     echo "  Create site: Yes"
     echo "  Site name: $SITE_NAME"
@@ -79,9 +83,9 @@ pip install --upgrade pip
 pip install frappe-bench
 
 # Step 7: Create Bench
-echo "[6/7] Creating frappe-bench..."
-bench init frappe-bench --frappe-branch version-15
-cd frappe-bench
+echo "[6/7] Creating $BENCH_NAME..."
+bench init $BENCH_NAME --frappe-branch version-15
+cd $BENCH_NAME
 bench set-config -g developer_mode 1
 
 # Step 8: Create Site (optional)
@@ -99,7 +103,7 @@ if [[ "$CREATE_SITE" =~ ^[Yy]$ ]]; then
     echo ""
     echo "To start Frappe, run:"
     echo "  source $FRAPPE_DIR/bench-env/bin/activate"
-    echo "  cd $FRAPPE_DIR/frappe-bench"
+    echo "  cd $FRAPPE_DIR/$BENCH_NAME"
     echo "  bench start"
     echo ""
 else
@@ -111,12 +115,12 @@ else
     echo ""
     echo "To create a site manually, run:"
     echo "  source $FRAPPE_DIR/bench-env/bin/activate"
-    echo "  cd $FRAPPE_DIR/frappe-bench"
+    echo "  cd $FRAPPE_DIR/$BENCH_NAME"
     echo "  bench new-site <site-name> --admin-password admin --db-root-password $DB_ROOT_PASSWORD"
     echo ""
     echo "To start Frappe, run:"
     echo "  source $FRAPPE_DIR/bench-env/bin/activate"
-    echo "  cd $FRAPPE_DIR/frappe-bench"
+    echo "  cd $FRAPPE_DIR/$BENCH_NAME"
     echo "  bench start"
     echo ""
 fi
