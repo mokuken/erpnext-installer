@@ -84,7 +84,29 @@ pip install frappe-bench
 
 # Step 7: Create Bench
 echo "[6/7] Creating $BENCH_NAME..."
-bench init $BENCH_NAME --frappe-branch version-15
+
+# Increase git buffer size to handle large clones
+git config --global http.postBuffer 524288000
+
+# Retry bench init up to 3 times in case of network issues
+RETRY_COUNT=0
+MAX_RETRIES=3
+while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+    if bench init $BENCH_NAME --frappe-branch version-15; then
+        break
+    else
+        RETRY_COUNT=$((RETRY_COUNT + 1))
+        if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
+            echo "Retrying ($RETRY_COUNT/$MAX_RETRIES)..."
+            sleep 5
+            rm -rf $BENCH_NAME
+        else
+            echo "ERROR: Failed after $MAX_RETRIES attempts. Check your internet connection and try again."
+            exit 1
+        fi
+    fi
+done
+
 cd $BENCH_NAME
 bench set-config -g developer_mode 1
 
